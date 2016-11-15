@@ -2,6 +2,8 @@ package com.tegar.pengmas;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
