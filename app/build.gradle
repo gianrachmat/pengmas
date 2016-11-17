@@ -24,10 +24,14 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    //custom icon
+    //custom icon typeface
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.wrapp.floatlabelededittext:library:0.0.6'
-    compile "com.mikepenz:iconics-core:2.8.0@aar" //custom icon
-    compile 'com.mikepenz:fontawesome-typeface:4.6.0.3@aar' //custom icon typeface
+    compile 'com.mikepenz:iconics-core:2.8.0@aar'
+    compile 'com.mikepenz:fontawesome-typeface:4.6.0.3@aar'
     compile 'com.jakewharton:butterknife:8.2.1'
+    compile 'com.google.android.gms:play-services-location:9.8.0'
+    compile 'com.google.android.gms:play-services-maps:9.8.0'
     testCompile 'junit:junit:4.12'
 }

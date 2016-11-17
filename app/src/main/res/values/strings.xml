@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Pengmas</string>
+    <string name="title_activity_maps">Pilih di Peta</string>
 </resources>
