@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Pengmas</string>
     <string name="title_activity_maps">Pilih di Peta</string>
+    <string name="lanjut">Lanjut</string>
+    <string name="settings">Settings</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="klik_set_ip">Klik Set IP</string>
 </resources>

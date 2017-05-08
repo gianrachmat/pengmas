@@ -1,6 +1,8 @@
 package com.tegar.pengmas;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -35,12 +37,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     double lat, lng; // latitude dan longitude
     GoogleApiClient googleApiClient; // membuat klien dari Google API
     LocationRequest locationRequest; //
-    Location location; //
+    protected Location location; //
+    private TextView lati, lngi;
 
     // interval pembaruan pada detik
     private static int UPDATE_INTERVAL = 5000; // 5 sec
     private static int FASTEST_INTERVAL = 2500; // 2.5 sec
     private static int DISPLACEMENT = 10; // 10 meters
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        lati = (TextView) findViewById(R.id.lat);
+        lngi = (TextView) findViewById(R.id.lng);
+
+        lati.setText("");
+        lngi.setText("");
 
         if (checkPlayService()){
             buildGoogleApiClient();
@@ -70,9 +80,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         MarkerOptions options = new MarkerOptions();
-        LatLng sydney = new LatLng(lat, lng);
-        options.position(sydney);
+        LatLng latLng = new LatLng(lat, lng);
+        options.position(latLng).draggable(true);
         marker = mMap.addMarker(options);
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                marker.remove();
+                marker = mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                );
+                String str = String.valueOf(marker.getPosition().latitude);
+                lati.setText(str);
+                str = String.valueOf(marker.getPosition().longitude);
+                lngi.setText(str);
+            }
+        });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Log.d("klik", "klik Marker");
+                backTo(marker);
+//                marker.showInfoWindow();
+                return true;
+            }
+        });
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                backTo(marker);
+            }
+        });
+    }
+
+    private void backTo(Marker marker){
+        String lat = ""+marker.getPosition().latitude;
+        String lng = ""+marker.getPosition().longitude;
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("lat", ""+lat);
+        intent.putExtra("lng", ""+lng);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     @Override
@@ -86,16 +136,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(location != null){
             lat = location.getLatitude();
             lng = location.getLongitude();
+
+//            lati.setText(""+lat);
+//            lngi.setText(""+lng);
+        } else {
+//            lati.setText("Mencari");
+//            lngi.setText("Mencari");
         }
     }
 
     private void updateMarker(){
-        marker.remove();
-        MarkerOptions options = new MarkerOptions();
         LatLng sydney = new LatLng(lat, lng);
-        options.position(sydney);
-        marker = mMap.addMarker(options);
-        Log.d("isi lat lng",""+lat+", "+lng);
+        Log.d("lat lat lng",""+lat+", "+lng);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 19));
     }
 
@@ -133,13 +185,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     protected void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this, new String[] {  Manifest.permission.ACCESS_FINE_LOCATION  }, 1234);
+
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
@@ -148,8 +195,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void stopLocationupdates(){
         LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
     }
-
-
 
     @Override
     protected void onPause() {
@@ -193,6 +238,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i("Error", "Koneksi gagal, kode = "+connectionResult.getErrorCode());
     }
-
-
 }
