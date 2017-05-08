@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 Response response = client.newCall(request).execute();
             } catch (IOException e) {
-                Toast.makeText(MainActivity.this, "Gagal", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "Gagal", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
             return null;
