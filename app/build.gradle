@@ -2,12 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        sign1 {
-            keyAlias 'gian'
-            keyPassword 'password'
-            storeFile file('C:/Users/gian/Desktop/key_android.jks')
-            storePassword 'password'
-        }
     }
     compileSdkVersion 24
     buildToolsVersion '25.0.0'
@@ -23,7 +17,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.sign1
+//            signingConfig signingConfigs.sign1
         }
     }
 }
